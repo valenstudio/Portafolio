@@ -1,10 +1,6 @@
-# Portafolio
+## Portafolio
 
-Este es el repositorio de mi portafolio web personal, creado para mostrar proyectos, habilidades y experiencia profesional.
-
-![Vista de Inicio](./src/assets/images/LandingInicio.png)
-
-## Tecnologías
+Créditos: Valentina Arbeláez Durango y Daniel Cardona Gonzalez.
 
 * HTML5
 * CSS3

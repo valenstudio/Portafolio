@@ -1,102 +1,82 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import './ProjectsPage.css';
-import { projectsData } from '../data/projects';
+import { projectsData, projectCategories } from '../data/projects';
+import { ShapeDecoration, type ShapeType } from './Decorations';
 
 interface ProjectsPageProps {
-  category: string;
   onProjectClick: (id: number) => void;
-  onHideNav?: (hide: boolean) => void;
 }
 
-const ProjectsPage: React.FC<ProjectsPageProps> = ({ category, onProjectClick, onHideNav }) => {
-  const sentinelRef = useRef<HTMLDivElement>(null);
+// Same palette as the category cards on the home page
+// sectionBg: soft tint behind each whole section (solid, so the scalloped edge matches exactly)
+const categoryStyles: Record<string, { bg: string; color: string; thumbBg: string; sectionBg: string; shape: ShapeType; shapeColor: string }> = {
+  'EDITORIAL': { bg: '#FFF4F8', color: '#8C182B', thumbBg: '#FFD0DF', sectionBg: '#FFEFE4', shape: 'sparkle', shapeColor: '#FFC4D9' },
+  'ILUSTRACIÓN': { bg: '#F0F7FF', color: '#1A365D', thumbBg: '#DCE9FF', sectionBg: '#E9EEFA', shape: 'flower', shapeColor: '#C4E1FF' },
+  'BRANDING': { bg: '#FDFEEB', color: '#2E4D2B', thumbBg: '#F1F5BA', sectionBg: '#F9F9D1', shape: 'burst', shapeColor: '#E5F487' }
+};
 
-  // Category specific colors matching the previous design
-  const categoryColors: Record<string, string> = {
-    'EDITORIAL': '#FFD0DF',
-    'ILUSTRACIÓN': '#DFDBFF',
-    'BRANDING': '#F1F5BA'
-  };
-
-  const activeCategory = category.toUpperCase();
-  const color = categoryColors[activeCategory] || '#FFB8D1';
-  const projects = projectsData.filter(p => p.category === activeCategory);
-  const N = projects.length;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sentinelRef.current) return;
-      const rect = sentinelRef.current.getBoundingClientRect();
-      
-      const lastCardTop = 100 + (N - 1) * 110;
-      
-      // Proactive fade like in HomePage
-      if (rect.top <= lastCardTop + 50) {
-        if (onHideNav) onHideNav(true);
-      } else {
-        if (onHideNav) onHideNav(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Check initially
-    handleScroll();
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (onHideNav) {
-        onHideNav(false);
-      }
-    };
-  }, [onHideNav, N]);
-
+const ProjectsPage: React.FC<ProjectsPageProps> = ({ onProjectClick }) => {
   return (
-    <div className="home-page" style={{ paddingTop: '150px', paddingBottom: '100px' }}>
-      <div className="stacked-categories-container">
-        {projects.map((project, index) => {
-          const wrapperHeight = (N - 1 - index) * 110 + 420;
+    <div className="home-page projects-overview">
+      {projectCategories.map((category, catIndex) => {
+        const style = categoryStyles[category.key];
+        const projects = projectsData.filter(p => p.category === category.key);
 
-          return (
-            <React.Fragment key={project.id}>
-              {index === N - 1 && <div ref={sentinelRef} style={{ width: '100%', height: '1px' }} />}
-              <div 
-                className="stacked-category-wrapper"
-                style={{ 
-                  position: 'sticky',
-                  zIndex: 1010 + index,
-                  '--top-desktop': `${130 + (index * 110)}px`,
-                  '--top-mobile': `${100 + (index * 60)}px`,
-                  '--wrapper-desktop': `${wrapperHeight}px`,
-                  '--wrapper-mobile': `${(N - 1 - index) * 60 + 180}px`
-                } as React.CSSProperties}
-              >
-                {index === 0 && (
-                  <h1 className="projects-page-title">
-                    {category}
-                  </h1>
-                )}
-                <div 
-                   className="stacked-category-card"
-                   style={{ 
-                     backgroundColor: color,
-                     color: '#1A3A3A'
-                   }}
-                   onClick={() => onProjectClick(project.id)}
-                 >
-                   <div className="card-top">
-                     <h2 className="card-title" style={{ color: '#1A3A3A' }}>{project.title}</h2>
-                     <span className="card-number" style={{ color: '#1A3A3A' }}>({index < 9 ? '0' : ''}{index + 1})</span>
-                   </div>
-                 </div>
+        return (
+          <section
+            key={category.key}
+            id={category.sectionId}
+            className="projects-category-section"
+            style={{ '--section-bg': style.sectionBg } as React.CSSProperties}
+          >
+            <div className="projects-category-inner">
+              <ShapeDecoration
+                type={style.shape}
+                color={style.shapeColor}
+                size={70}
+                className={`floating-shape ${catIndex % 2 === 0 ? 'float-anim-1' : 'float-anim-2'}`}
+                style={{ top: catIndex % 2 === 0 ? '10px' : '30px', right: catIndex % 2 === 0 ? '4%' : '10%' }}
+              />
+
+              <h2 className="projects-category-title" style={{ color: style.color }}>
+                {category.label}
+                <span className="projects-category-asterisk">*</span>
+              </h2>
+
+              <div className="projects-tiles-grid">
+                {projects.map((project, index) => (
+                  <motion.button
+                    key={project.id}
+                    type="button"
+                    className="project-tile"
+                    style={{ '--tile-bg': style.bg, '--tile-color': style.color, '--tile-thumb-bg': style.thumbBg } as React.CSSProperties}
+                    onClick={() => onProjectClick(project.id)}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-60px' }}
+                    transition={{ duration: 0.5, delay: index * 0.08 }}
+                    aria-label={`Ver proyecto ${project.title}`}
+                  >
+                    <div className="project-tile-inner">
+                      <div className={`project-tile-thumb ${project.thumbnailFit === 'cover' ? 'fit-cover' : 'fit-contain'}`}>
+                        {project.thumbnail && (
+                          <img src={project.thumbnail} alt="" loading="lazy" />
+                        )}
+                      </div>
+                      <div className="project-tile-info">
+                        <span className="project-tile-title">{project.title}</span>
+                        <span className="project-tile-number">({index < 9 ? '0' : ''}{index + 1})</span>
+                      </div>
+                      <span className="project-tile-subtitle">{project.subtitle.replace('\n', ' ')}</span>
+                    </div>
+                  </motion.button>
+                ))}
               </div>
-            </React.Fragment>
-          );
-        })}
-      </div>
-      
-      {/* Decorative stars inherited from previous design */}
-      <div className="projects-decor decor-1" style={{ color: color }}>*</div>
-      <div className="projects-decor decor-2" style={{ color: color }}>*</div>
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 };

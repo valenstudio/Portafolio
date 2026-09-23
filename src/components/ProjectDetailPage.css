@@ -165,7 +165,7 @@
 
 .project-subtitle-large {
   font-family: 'Ambit', sans-serif;
-  font-size: 1.2rem;
+  font-size: 2.5rem; /* same hierarchy on every project: big subtitle, small meta, body text */
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 4px; /* Reduced interlineado */
@@ -195,6 +195,7 @@
   white-space: pre-wrap; /* Allows manual \n line breaks */
   margin-top: 25px; /* Space from metadata */
   margin-bottom: 0px;
+  color: #4A3C31; /* Un cafe oscuro neutro */
 }
 
 @media (max-width: 768px) {
@@ -331,6 +332,14 @@
   margin-bottom: 20px;
 }
 
+/* Captions under scaled third-width images: keep them below the image and aligned */
+.image-spread.third-width .map-caption {
+  margin-top: auto;
+  padding-top: 12%;
+  position: relative;
+  z-index: 2;
+}
+
 .image-spread.auto-height {
   justify-content: flex-end;
 }
@@ -443,4 +452,641 @@
 
 .nav-arrow.next:hover svg {
   transform: translateX(3px);
+}
+
+/* Corcovado & Banner Styles */
+.hero-logo-banner-top {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background-color: var(--banner-bg, var(--color-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.hero-logo-banner-img {
+  max-height: 280px;
+  width: auto;
+  max-width: 85%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* ---- Brand videos (Cuarzo, Corcovado, from YouTube): colorful play / sound controls ---- */
+.yt-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.yt-frame iframe {
+  position: absolute;
+  left: 0;
+  top: -70px;
+  width: 100%;
+  height: calc(100% + 140px); /* taller than the window: YouTube's title bar and logo end up outside */
+  border: 0;
+  pointer-events: none; /* no YouTube hover overlays */
+}
+
+.yt-click-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Veil with the video's image: hides YouTube's black loading frames and spinner, fades away when the video moves */
+.yt-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: #2B1B1B;
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.yt-veil.is-hidden {
+  opacity: 0;
+}
+
+.yt-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.yt-cover-play {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #FDE292;
+  color: #2B1B1B;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s;
+}
+
+.yt-cover.is-preview {
+  background: rgba(0, 0, 0, 0.12);
+  transition: background-color 0.45s ease;
+}
+
+.yt-cover:hover .yt-cover-play {
+  transform: scale(1.08);
+}
+
+.brand-video-controls {
+  z-index: 2;
+}
+
+.brand-video {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.brand-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.brand-video-controls {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 8px;
+  background-color: rgba(255, 247, 239, 0.94);
+  border: 2px solid #000;
+  border-radius: 999px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.85);
+}
+
+.bv-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2B1B1B;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.bv-play { background-color: #FDE292; }
+.bv-sound { background-color: #FFC4D9; }
+
+.bv-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.85);
+}
+
+.bv-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+
+.bv-btn:focus-visible,
+.bv-volume:focus-visible {
+  outline: 3px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+.bv-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 110px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid #000;
+  background: linear-gradient(to right, #C4E1FF var(--vol, 0%), #FFF7EF var(--vol, 0%));
+  cursor: pointer;
+}
+
+.bv-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #E5F487;
+  border: 2px solid #000;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+
+.bv-volume::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #E5F487;
+  border: 2px solid #000;
+}
+
+@media (max-width: 768px) {
+  .brand-video-controls {
+    left: 8px;
+    bottom: 8px;
+    gap: 8px;
+    padding: 5px 10px 5px 6px;
+  }
+
+  .bv-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .bv-volume {
+    width: 80px;
+  }
+}
+
+/* Floating shapes on the banner (behind the logo / title) */
+.banner-deco {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  transform: rotate(var(--r, 0deg)) scale(var(--deco-scale, 1));
+}
+
+.banner-deco svg {
+  display: block;
+}
+
+.hero-logo-banner-img,
+.hero-banner-title {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .banner-deco {
+    --deco-scale: 0.55;
+  }
+}
+
+.hero-logo-banner-img.keep-colors {
+  filter: none;
+}
+
+.hero-banner-title {
+  font-family: 'Bookmania', serif;
+  font-size: clamp(40px, 6vw, 5rem);
+  font-weight: bold;
+  color: var(--banner-text, #fff7ef);
+  text-align: center;
+  line-height: 1.1;
+  text-transform: uppercase;
+  max-width: 90%;
+}
+
+.project-id-8 .hero-logo-banner-img {
+  max-height: 380px;
+  transform: scale(1.5);
+  max-width: 90%;
+}
+
+@media (max-width: 768px) {
+  .project-id-8 .hero-logo-banner-img {
+    transform: scale(1.1);
+    max-width: 80%;
+  }
+}
+
+/* Cuarzo Café (id 11): smaller logo so it breathes inside the banner */
+.project-id-11 .hero-logo-banner-img {
+  max-height: 180px;
+  max-width: 60%;
+}
+
+@media (max-width: 768px) {
+  .project-id-11 .hero-logo-banner-img {
+    max-height: 120px;
+    max-width: 65%;
+  }
+}
+
+.project-id-10 .hero-logo-banner-img {
+  filter: none !important;
+}
+
+.project-id-10 .project-subtitle-large,
+.project-id-10 .project-meta {
+  color: #A00028;
+}
+
+.project-id-10 .map-caption,
+.project-id-10 .image-caption {
+  color: #4A3C31;
+}
+
+/* Large portrait pair: bigger images that sit close together (e.g. Agua con sal) */
+.image-spread.large-portrait {
+  width: auto;
+  max-width: calc(50% - 5px);
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.image-spread.large-portrait img {
+  height: 680px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .image-spread.large-portrait {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .image-spread.large-portrait img {
+    height: auto;
+    width: 100%;
+    max-height: 80vh;
+  }
+}
+
+/* Row of three: always three side by side, same height (e.g. Corcovado bottles) */
+.image-spread.row-of-three {
+  width: calc((100% - 20px) / 3);
+  max-width: none;
+  margin: 0;
+  align-items: center;
+}
+
+.image-spread.row-of-three img {
+  width: 100%;
+  height: 600px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .image-spread.row-of-three {
+    width: calc((100% - 20px) / 3);
+  }
+
+  .image-spread.row-of-three img {
+    height: 260px;
+  }
+}
+
+/* Corcovado: star as a sticker stuck on the banner's bottom edge */
+.corcovado-star-decorator {
+  position: absolute;
+  right: 10%;
+  bottom: -48px;
+  width: 110px;
+  height: 110px;
+  transform: rotate(14deg);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+  z-index: 5;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .corcovado-star-decorator {
+    width: 70px;
+    height: 70px;
+    bottom: -30px;
+    right: 6%;
+  }
+}
+
+.corcovado-star-container {
+  position: absolute;
+  top: 420px;
+  right: 10%;
+  width: 80px;
+  height: 80px;
+  z-index: 100;
+  transform: translateY(-50%) rotate(15deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.corcovado-star-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.corcovado-star-text {
+  position: relative;
+  z-index: 2;
+  font-family: 'Ambit', sans-serif;
+  font-size: 0.35rem;
+  font-weight: bold;
+  color: #0E2D4F;
+  text-align: center;
+  line-height: 1.1;
+  max-width: 65%;
+  transform: rotate(-15deg);
+}
+
+.image-spread.quarter-width {
+  width: calc((100% - 30px) / 4);
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.image-spread.quarter-width img {
+  width: 100%;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .image-spread.quarter-width {
+    width: 100%;
+  }
+}
+
+.image-spread.scale-down img {
+  transform: scale(1.15) !important;
+  transition: transform 0.3s ease-out !important;
+}
+
+.image-spread.scale-down img:hover {
+  transform: scale(1.18) !important;
+}
+
+/* On phones the enlarged image stuck out a few px and let the page wiggle sideways */
+@media (max-width: 768px) {
+  .image-spread.scale-down img,
+  .image-spread.scale-down img:hover {
+    transform: none !important;
+  }
+}
+
+/* Casa Oculta Specific Styles (id: 9) */
+.project-id-9 .hero-logo-banner-top {
+  height: 550px;
+  padding-top: 120px;
+  padding-bottom: 60px;
+}
+
+.project-id-9 .hero-logo-banner-img {
+  max-height: 400px;
+  transform: scale(1.4) translateX(-2%);
+  max-width: 90%;
+}
+
+
+/* Category key stamp, placed right before the description (height set from the text block in ProjectDetailPage.tsx) */
+.header-icon-col {
+  flex: 0 0 auto;
+  padding-bottom: 25px; /* same offset as .header-right-col so both blocks share the same bottom */
+}
+
+.project-side-icon {
+  display: block;
+  height: 300px;
+  width: auto;
+  max-width: 30vw;
+  object-fit: contain;
+}
+
+/* Key + description form one centered block on every project page */
+.header-columns.has-side-icon {
+  justify-content: center;
+}
+
+.header-columns.has-side-icon .header-right-col {
+  flex: 0 1 auto;
+}
+
+@media (max-width: 900px) {
+  .header-icon-col {
+    padding-bottom: 0;
+  }
+}
+
+/* Tablets: key and text stay side by side like on desktop */
+@media (min-width: 601px) and (max-width: 900px) {
+  .header-columns.has-side-icon {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 28px;
+  }
+}
+
+/* Phones: key on top of the text, smaller */
+@media (max-width: 600px) {
+  .project-side-icon {
+    height: 120px !important;
+  }
+}
+
+.casa-oculta-title-img {
+  width: 100%;
+  max-width: 450px;
+  object-fit: contain;
+  margin-top: 15px; /* Adjust to align with the right column */
+}
+
+/* ===== Responsive: tablet and phone adjustments for the project pages ===== */
+@media (max-width: 1024px) {
+  /* Casa nostalgia 1 / 2: no zoom, so they don't stick out or leave a big gap under them */
+  .image-spread.auto-height {
+    justify-content: flex-start;
+  }
+
+  .image-spread.auto-height img {
+    height: auto;
+    transform: none;
+  }
+
+  /* Rows of three: the images keep their own height (no empty space above the captions) */
+  .image-spread.row-of-three img {
+    height: auto;
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 900px) {
+  /* The banner already sits under the menu, so the text doesn't need the big top space */
+  .detail-container {
+    padding-top: 24px;
+  }
+
+  .hero-logo-banner-top {
+    height: 340px;
+    margin-bottom: 16px;
+  }
+
+  .project-id-9 .hero-logo-banner-top {
+    height: 400px;
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  .project-id-9 .hero-logo-banner-img {
+    max-height: 260px;
+    transform: scale(1.15);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-logo-banner-top {
+    height: 300px;
+    padding: 30px 16px;
+  }
+
+  .project-id-9 .hero-logo-banner-top {
+    height: 340px;
+    padding-top: 70px;
+    padding-bottom: 30px;
+  }
+
+  .project-id-9 .hero-logo-banner-img {
+    max-height: 220px;
+    transform: scale(1.1);
+  }
+
+  .project-images-stack {
+    gap: 44px;
+  }
+
+  .images-grid {
+    gap: 40px 10px;
+  }
+
+  /* Rows of three illustrations: one per line on phones so they're big enough to see */
+  .image-spread.row-of-three {
+    width: 100%;
+  }
+
+  .image-spread.row-of-three img {
+    height: auto;
+    max-height: 75vh;
+  }
+
+  /* ...except the Corcovado bottles, which look good three across */
+  .project-id-8 .image-spread.row-of-three {
+    width: calc((100% - 20px) / 3);
+  }
+
+  .project-id-8 .image-spread.row-of-three img {
+    height: 260px;
+    max-height: none;
+  }
+
+  /* Video: smaller play button */
+  .yt-cover-play {
+    width: 56px;
+    height: 56px;
+  }
+
+  .yt-cover-play svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Corcovado bottles: each column is as wide as its bottle, so the three sit close together */
+@media (min-width: 769px) {
+  .project-id-8 .image-spread.row-of-three {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 0 14px;
+  }
+
+  .project-id-8 .image-spread.row-of-three img {
+    width: auto;
+    height: 600px;
+    max-width: none;
+  }
+
+  .project-id-8 .image-spread.row-of-three .map-caption {
+    text-align: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .project-id-8 .image-spread.row-of-three img {
+    height: 460px;
+    max-height: none;
+  }
 }
