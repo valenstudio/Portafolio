@@ -1,11 +1,25 @@
-Portafolio - Valentina Arbelaez
-
-Como Ejecutar el proyecto de manera local:
-
-1. Clonar el repositorio
-2. Ejecutar el comando npm install para instalar las dependencias
-3. Ejecutar el comando npm run dev para ejecutar el proyecto
-
-Link de despliegue en Github pages: https://valenarb8.github.io/Portafolio/
+## Portafolio
 
 Créditos: Valentina Arbeláez Durango y Daniel Cardona Gonzalez.
+
+* HTML5
+* CSS3
+* JavaScript
+* GitHub Pages
+
+## Demo en Vivo
+
+[https://valenstudio.github.io/Portafolio/](https://valenstudio.github.io/Portafolio/)
+
+## Instalación Local
+
+1. Clona el repositorio: `git clone https://github.com/valenstudio/Portafolio.git`
+2. Ingresa a la carpeta: `cd Portafolio`
+3. Abre `index.html` en el navegador.
+
+## Créditos
+
+* Daniel Cardona Gonzalez (Software)
+* Valentina Arbelaez (Software, Diseño)
+
+![Imagen Final](./src/assets/images/ValenBlanco.png)
