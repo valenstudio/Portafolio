@@ -280,7 +280,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
               <div className="about-preview-contact-btns">
                 <a
                   className="about-preview-btn about-preview-whatsapp"
-                  href="https://wa.me/573113606718?text=Hola!%20vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"
+                  href="https://wa.me/573002248086?text=Hola!%20vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
