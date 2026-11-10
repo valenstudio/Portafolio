@@ -10,6 +10,7 @@ import valenLandingImg from '../assets/images/ValenParaLanding.png';
 import valenLandingCelularImg from '../assets/images/LandingCelular.png';
 import { projectsData } from '../data/projects';
 import { ShapeDecoration } from './Decorations';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HomePageProps {
   onNavigateToProjects: (category: string) => void;
@@ -18,6 +19,8 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToProject, onNavigateToAbout }) => {
+  const { language, setLanguage } = useLanguage();
+  const isEn = language === 'en';
   return (
     <div className="home-page">
       {/* Filtro SVG para la sombra de pincel de grano tipo Procreate */}
@@ -59,23 +62,40 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
           <ShapeDecoration type="asterisk" color="#1A365D" size={60} className="floating-shape spin-anim" style={{ bottom: '20px', right: '10%' }} />
           
           <div className="quote-pill">
-            <span className="quote-text">"Mereces lo que sueñas"</span>
+            <span className="quote-text">{isEn ? '"You deserve what you dream"' : '"Mereces lo que sueñas"'}</span>
           </div>
         </div>
         
         <div className="services-bottom-pink">
-
+          <div className="language-switch">
+            <button
+              type="button"
+              className={`about-preview-btn btn-blue ${!isEn ? 'active-lang' : ''}`}
+              onClick={() => setLanguage('es')}
+              aria-pressed={!isEn}
+            >
+              Español
+            </button>
+            <button
+              type="button"
+              className={`about-preview-btn btn-yellow ${isEn ? 'active-lang' : ''}`}
+              onClick={() => setLanguage('en')}
+              aria-pressed={isEn}
+            >
+              English
+            </button>
+          </div>
 
           <div className="services-cards-container">
             {/* Ilustración */}
             <div className="service-card" style={{ backgroundColor: '#F0F7FF', '--card-color': '#1A365D' } as React.CSSProperties}>
               <div className="service-card-inner">
                 <div className="service-card-img-wrapper">
-                  <img src={florAzul} alt="Ilustración" className="service-card-image house-img" />
-                  <img src={puertaAzul} alt="Puerta Ilustración" className="service-card-image door-img" />
+                  <img src={florAzul} alt={isEn ? "Illustration" : "Ilustración"} className="service-card-image house-img" />
+                  <img src={puertaAzul} alt={isEn ? "Illustration Door" : "Puerta Ilustración"} className="service-card-image door-img" />
                 </div>
                 <h3 className="service-card-title">
-                  Ilustración
+                  {isEn ? 'Illustration' : 'Ilustración'}
                   <span style={{ 
                     fontFamily: "'MV Boli', cursive", 
                     fontWeight: 'normal', 
@@ -85,7 +105,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                     transform: 'translateY(15px)'
                   }}>*</span>
                 </h3>
-                <p className="service-card-desc">Personajes, composiciones, portadas<br/>y universos visuales.</p>
+                <p className="service-card-desc">
+                  {isEn ? (
+                    <>Characters, compositions, covers,<br/>and visual universes.</>
+                  ) : (
+                    <>Personajes, composiciones, portadas<br/>y universos visuales.</>
+                  )}
+                </p>
                 <div className="service-card-pills">
                   {projectsData.filter(p => p.category === 'ILUSTRACIÓN').map(project => (
                     <span 
@@ -110,7 +136,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
               <div className="service-card-inner">
                 <div className="service-card-img-wrapper">
                   <img src={mariquita} alt="Branding" className="service-card-image house-img" />
-                  <img src={puertaVerde} alt="Puerta Branding" className="service-card-image door-img" />
+                  <img src={puertaVerde} alt={isEn ? "Branding Door" : "Puerta Branding"} className="service-card-image door-img" />
                 </div>
                 <h3 className="service-card-title">
                   Branding
@@ -123,7 +149,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                     transform: 'translateY(15px)'
                   }}>*</span>
                 </h3>
-                <p className="service-card-desc">Identidades visuales, tono de marca,<br/>empaques y dirección creativa.</p>
+                <p className="service-card-desc">
+                  {isEn ? (
+                    <>Visual identities, brand tone,<br/>packaging, and creative direction.</>
+                  ) : (
+                    <>Identidades visuales, tono de marca,<br/>empaques y dirección creativa.</>
+                  )}
+                </p>
                 <div className="service-card-pills">
                   {projectsData.filter(p => p.category === 'BRANDING').map(project => (
                     <span 
@@ -148,7 +180,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
               <div className="service-card-inner">
                 <div className="service-card-img-wrapper">
                   <img src={manzana} alt="Editorial" className="service-card-image house-img" style={{ maxWidth: '145px', bottom: '-10px' }} />
-                  <img src={puertaRosada} alt="Puerta Editorial" className="service-card-image door-img" style={{ maxWidth: '145px', bottom: '-10px' }} />
+                  <img src={puertaRosada} alt={isEn ? "Editorial Door" : "Puerta Editorial"} className="service-card-image door-img" style={{ maxWidth: '145px', bottom: '-10px' }} />
                 </div>
                 <h3 className="service-card-title">
                   Editorial
@@ -161,7 +193,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                     transform: 'translateY(15px)'
                   }}>*</span>
                 </h3>
-                <p className="service-card-desc">Revistas, mapas, libros y piezas variadas.</p>
+                <p className="service-card-desc">{isEn ? 'Magazines, maps, books, and diverse pieces.' : 'Revistas, mapas, libros y piezas variadas.'}</p>
                 <div className="service-card-pills">
                   {projectsData.filter(p => p.category === 'EDITORIAL').map(project => (
                     <span 
@@ -186,16 +218,18 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
         {/* Proyectos Destacados */}
         <div className="featured-projects-section">
           <div className="featured-header">
-            <span className="featured-subtitle">ALGUNOS DE MIS FAVORITOS</span>
-            <h2 className="featured-title">Proyectos Destacados</h2>
-            <p className="featured-desc">Una selección de trabajos que he realizado con mucho amor.</p>
+            <span className="featured-subtitle">{isEn ? 'SOME OF MY FAVORITES' : 'ALGUNOS DE MIS FAVORITOS'}</span>
+            <h2 className="featured-title">{isEn ? 'Featured Projects' : 'Proyectos Destacados'}</h2>
+            <p className="featured-desc">{isEn ? 'A selection of works I have created with lots of love.' : 'Una selección de trabajos que he realizado con mucho amor.'}</p>
           </div>
           <div className="featured-projects-grid">
-            {[9, 2, 7].map((id, index) => { /* Casa Oculta, Mientras tanto, Alma cotidiana */
+            {[9, 2, 5].map((id, index) => { /* Casa Oculta, Mientras tanto, Ideas Al Azar */
               const project = projectsData.find(p => p.id === id);
               if (!project) return null;
               const bgs = ['#FAD2E1', '#D3E2C7', '#C4E1FF'];
               const stickerColors = ['#D32F2F', '#F57F17', '#F48FB1'];
+              const projTitle = project.title;
+              const projSubtitle = isEn ? (project.subtitleEn ?? project.subtitle) : project.subtitle;
               
               return (
                 <div 
@@ -206,7 +240,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                   <div className="featured-img-wrapper" style={{ '--card-bg': bgs[index] } as React.CSSProperties}>
                     <img
                       src={project.thumbnail ?? project.images.find(img => !img.isHeroLogo)?.url}
-                      alt={project.title}
+                      alt={projTitle}
                     />
                     <div className="featured-sticker">
                       {index === 0 && (
@@ -228,8 +262,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                     </div>
                   </div>
                   <div className="featured-info">
-                    <h3 className="featured-project-title">{project.title}</h3>
-                    <p className="featured-project-subtitle">{project.subtitle}</p>
+                    <h3 className="featured-project-title">{projTitle}</h3>
+                    <p className="featured-project-subtitle">{projSubtitle}</p>
                   </div>
                 </div>
               );
@@ -241,18 +275,20 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
         <div className="about-preview-section">
           <div className="about-preview-left">
             <div className="about-preview-card">
-              <h2 className="about-preview-title">QUIÉN SOY</h2>
+              <h2 className="about-preview-title">{isEn ? 'WHO I AM' : 'QUIÉN SOY'}</h2>
               <p className="about-preview-desc">
-                Soy una diseñadora gráfica en formación con un profundo interés en las artes visuales, buscando siempre aprender y adaptarme a nuevos retos creativos.
+                {isEn
+                  ? 'I am a graphic design student with a deep interest in the visual arts, always looking to learn and adapt to new creative challenges.'
+                  : 'Soy una diseñadora gráfica en formación con un profundo interés en las artes visuales, buscando siempre aprender y adaptarme a nuevos retos creativos.'}
               </p>
-              <h3 className="about-preview-subtitle">Especialidades:</h3>
+              <h3 className="about-preview-subtitle">{isEn ? 'Specialties:' : 'Especialidades:'}</h3>
               <ul className="about-preview-list">
-                <li>ILUSTRACIÓN DIGITAL</li>
-                <li>DISEÑO EDITORIAL</li>
-                <li>IDENTIDAD DE MARCA</li>
+                <li>{isEn ? 'DIGITAL ILLUSTRATION' : 'ILUSTRACIÓN DIGITAL'}</li>
+                <li>{isEn ? 'EDITORIAL DESIGN' : 'DISEÑO EDITORIAL'}</li>
+                <li>{isEn ? 'BRAND IDENTITY' : 'IDENTIDAD DE MARCA'}</li>
               </ul>
               <button className="about-preview-btn" onClick={onNavigateToAbout}>
-                SOBRE MÍ
+                {isEn ? 'ABOUT ME' : 'SOBRE MÍ'}
               </button>
             </div>
           </div>
@@ -276,11 +312,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
             <div className="dec-icon dec-yellow-dot float-anim-2"></div>
 
             <div className="about-preview-photo">
-              <span>¿Trabajamos juntos? :)</span>
+              <span>{isEn ? 'Shall we work together? :)' : '¿Trabajamos juntos? :)'}</span>
               <div className="about-preview-contact-btns">
                 <a
                   className="about-preview-btn about-preview-whatsapp"
-                  href="https://wa.me/573113606718?text=Hola!%20vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"
+                  href={isEn
+                    ? "https://wa.me/573002248086?text=Hi!%20I%20just%20checked%20out%20your%20portfolio%20%E2%9C%B7"
+                    : "https://wa.me/573002248086?text=Hola!%20vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -288,9 +326,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToProjects, onNavigateToP
                 </a>
                 <a
                   className="about-preview-btn about-preview-whatsapp"
-                  href="mailto:valearbelaez.06@gmail.com?subject=Hola!%20%E2%9C%B7&body=Hola!%20Vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"
+                  href={isEn
+                    ? "mailto:valearbelaez.06@gmail.com?subject=Hi!%20%E2%9C%B7&body=Hi!%20I%20just%20checked%20out%20your%20portfolio%20%E2%9C%B7"
+                    : "mailto:valearbelaez.06@gmail.com?subject=Hola!%20%E2%9C%B7&body=Hola!%20Vengo%20de%20chismosear%20tu%20portafolio%20%E2%9C%B7"}
                 >
-                  CORREO
+                  {isEn ? 'EMAIL' : 'CORREO'}
                 </a>
               </div>
             </div>

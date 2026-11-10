@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import './ProjectDetailPage.css';
 import { projectsData, getProjectSideIcon } from '../data/projects';
 import { ShapeDecoration, type ShapeType } from './Decorations';
+import { useLanguage } from '../context/LanguageContext';
 
 const TransitionVideo: React.FC<{ src: string }> = ({ src }) => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -65,16 +66,7 @@ const isLightColor = (hex: string) => {
   return 0.299 * r + 0.587 * g + 0.114 * b > 170;
 };
 
-const getBannerDecorations = (projectId: number, lightBanner: boolean): BannerDeco[] => {
-  // Ideas al Azar: floating dominoes
-  if (projectId === 5) {
-    return [
-      { type: 'domino', color: '#FDE292', size: 110, anim: 'float-anim-1', pos: { top: '12%', left: '9%' }, rotate: -20 },
-      { type: 'domino', color: '#FFF6EC', size: 95, anim: 'float-anim-2', pos: { top: '50%', right: '9%' }, rotate: 28 },
-      { type: 'domino', color: '#C4E1FF', size: 75, anim: 'float-anim-3', pos: { top: '60%', left: '20%' }, rotate: 70 },
-      { type: 'sparkle', color: '#E0457B', size: 50, anim: 'float-anim-2', pos: { top: '16%', right: '20%' } }
-    ];
-  }
+const getBannerDecorations = (_projectId: number, lightBanner: boolean): BannerDeco[] => {
   // Pastel shapes on dark banners, stronger colors on light banners so they still show
   const c = lightBanner
     ? { sparkle: '#F5B301', asterisk: '#E0457B', flower: '#3B82F6', burst: '#10B981' }
@@ -398,6 +390,8 @@ interface ProjectDetailPageProps {
 }
 
 const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClick }) => {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const project = projectsData.find(p => p.id === id);
 
   // Category key stamp: sits right next to the description and matches its height
@@ -423,7 +417,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
       observer.disconnect();
       cancelAnimationFrame(frame);
     };
-  }, [sideIcon, id]);
+  }, [sideIcon, id, language]);
   
   // Navigation logic
   const categoryProjects = projectsData.filter(p => p.category === project?.category);
@@ -433,8 +427,12 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
   const nextProject = categoryProjects[(currentIndex + 1) % categoryProjects.length];
 
   if (!project) {
-    return <div className="project-detail-page">Proyecto no encontrado</div>;
+    return <div className="project-detail-page">{isEn ? 'Project not found' : 'Proyecto no encontrado'}</div>;
   }
+
+  const projTitle = project.title;
+  const projSubtitle = isEn ? (project.subtitleEn ?? project.subtitle) : project.subtitle;
+  const projDescription = isEn ? (project.descriptionEn ?? project.description) : project.description;
 
   const heroLogoImg = project.images.find(img => img.isHeroLogo);
   // Banner color: the project's own color (Branding) or its category color (Editorial / Ilustración)
@@ -477,11 +475,11 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
         {heroLogoImg ? (
           <img
             src={heroLogoImg.url}
-            alt={`${project.title} logo`}
+            alt={`${projTitle} logo`}
             className={`hero-logo-banner-img ${heroLogoImg.keepLogoColors ? 'keep-colors' : ''}`}
           />
         ) : (
-          <h1 className="hero-banner-title">{renderTitle(project.title)}</h1>
+          <h1 className="hero-banner-title">{renderTitle(projTitle)}</h1>
         )}
         {project.id === 8 && (
           <svg viewBox="-8 -8 116 116" className="corcovado-star-decorator" aria-hidden="true">
@@ -508,7 +506,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
             
             <div className="header-right-col">
               <div className="desc-section" ref={descRef}>
-                <h2 className="project-subtitle-large">{renderTitle(project.subtitle)}</h2>
+                <h2 className="project-subtitle-large">{renderTitle(projSubtitle)}</h2>
                 <div className="project-meta-list">
                   {project.info.filter(item => item.label !== 'CRÉDITOS').map((item, idx) => (
                     <motion.div 
@@ -520,12 +518,12 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
                       transition={{ duration: 0.5, delay: idx * 0.1 }}
                     >
                       <span className="meta-star">*</span>
-                      <span className="meta-text">{item.label} — {item.value}</span>
+                      <span className="meta-text">{isEn ? (item.labelEn ?? item.label) : item.label} — {isEn ? (item.valueEn ?? item.value) : item.value}</span>
                     </motion.div>
                   ))}
                 </div>
                 {/* Description Block */}
-                {project.description && (
+                {projDescription && (
                   <motion.p 
                     className="project-description-large"
                     initial={{ opacity: 0, y: 20 }}
@@ -533,7 +531,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.6 }}
                   >
-                    {project.description}
+                    {projDescription}
                   </motion.p>
                 )}
               </div>
@@ -547,25 +545,28 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
             {/* Featured Images */}
             {!project.noFeatured && (
               <div className={`images-featured-group ${project.category !== 'EDITORIAL' || project.singleFeatured ? 'single-featured' : ''}`}>
-                {featuredImages.map((img, index) => (
-                  <div key={`feat-${index}`} className="image-featured">
-                    {img.youtubeId ? (
-                      <YouTubeVideo videoId={img.youtubeId} previewSeconds={img.previewSeconds} title={`${project.title} — ${img.caption || 'video'}`} />
-                    ) : img.url.toLowerCase().match(/\.(mp4|mov|webm)$/) ? (
-                      <TransitionVideo src={img.url} />
-                    ) : (
-                      <motion.img 
-                        src={img.url} 
-                        alt={img.caption || `${project.title} imagen destacada ${index + 1}`}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        whileHover={{ scale: 1.03, rotate: index % 2 === 0 ? 1 : -1 }}
-                      />
-                    )}
-                    {img.caption && <span className="image-caption">{img.caption}</span>}
-                  </div>
-                ))}
+                {featuredImages.map((img, index) => {
+                  const cap = isEn ? (img.captionEn ?? img.caption) : img.caption;
+                  return (
+                    <div key={`feat-${index}`} className="image-featured">
+                      {img.youtubeId ? (
+                        <YouTubeVideo videoId={img.youtubeId} previewSeconds={img.previewSeconds} title={`${projTitle} — ${cap || 'video'}`} />
+                      ) : img.url.toLowerCase().match(/\.(mp4|mov|webm)$/) ? (
+                        <TransitionVideo src={img.url} />
+                      ) : (
+                        <motion.img 
+                          src={img.url} 
+                          alt={cap || `${projTitle} ${index + 1}`}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          whileHover={{ scale: 1.03, rotate: index % 2 === 0 ? 1 : -1 }}
+                        />
+                      )}
+                      {cap && <span className="image-caption">{cap}</span>}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -594,16 +595,17 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
                   return groupedImages.map((group, gIdx) => {
                     if (group.type === 'single') {
                       const { img, originalIndex } = group;
+                      const cap = isEn ? (img.captionEn ?? img.caption) : img.caption;
                       return (
-                        <div key={`spread-${originalIndex}`} className={`image-spread ${img.halfWidth ? 'half-width' : ''} ${img.thirdWidth ? 'third-width' : ''} ${img.quarterWidth ? 'quarter-width' : ''} ${img.autoHeight ? 'auto-height' : ''} ${img.hideOnMobile ? 'hide-on-mobile' : ''} ${img.scaleDown ? 'scale-down' : ''} ${img.largePortrait ? 'large-portrait' : ''} ${img.rowOfThree ? 'row-of-three' : ''}`}>
+                        <div key={`spread-${originalIndex}`} className={`image-spread ${img.halfWidth ? 'half-width' : ''} ${img.thirdWidth ? 'third-width' : ''} ${img.quarterWidth ? 'quarter-width' : ''} ${img.autoHeight ? 'auto-height' : ''} ${img.hideOnMobile ? 'hide-on-mobile' : ''} ${img.scaleDown ? 'scale-down' : ''} ${img.largePortrait ? 'large-portrait' : ''} ${img.mediumPortrait ? 'medium-portrait' : ''} ${img.rowOfThree ? 'row-of-three' : ''}`}>
                           {img.youtubeId ? (
-                            <YouTubeVideo videoId={img.youtubeId} previewSeconds={img.previewSeconds} title={`${project.title} — ${img.caption || 'video'}`} />
+                            <YouTubeVideo videoId={img.youtubeId} previewSeconds={img.previewSeconds} title={`${projTitle} — ${cap || 'video'}`} />
                           ) : img.url.toLowerCase().match(/\.(mp4|mov|webm)$/) ? (
                             <TransitionVideo src={img.url} />
                           ) : (
                             <motion.img 
                               src={img.url} 
-                              alt={img.caption || `${project.title} imagen ${originalIndex + 1}`}
+                              alt={cap || `${projTitle} ${originalIndex + 1}`}
                               initial={{ opacity: 0, y: 30 }}
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true, margin: "-100px" }}
@@ -611,17 +613,20 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
                               whileHover={{ scale: 1.02 }}
                             />
                           )}
-                          <span className="map-caption">{img.caption}</span>
+                          <span className="map-caption">{cap}</span>
                         </div>
                       );
                     } else {
                       return (
                         <div key={`carousel-${gIdx}`} className="carousel-group-container">
-                          {group.items.map(({ img, originalIndex }: any, idx: number) => (
-                            <div key={`c-item-${originalIndex}`} className={`carousel-item carousel-item-${idx}`}>
-                              <img src={img.url} alt={img.caption || `Carousel image ${idx + 1}`} />
-                            </div>
-                          ))}
+                          {group.items.map(({ img, originalIndex }: any, idx: number) => {
+                            const cap = isEn ? (img.captionEn ?? img.caption) : img.caption;
+                            return (
+                              <div key={`c-item-${originalIndex}`} className={`carousel-item carousel-item-${idx}`}>
+                                <img src={img.url} alt={cap || `Carousel image ${idx + 1}`} />
+                              </div>
+                            );
+                          })}
                         </div>
                       );
                     }
@@ -637,7 +642,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
           <button 
             className="nav-arrow prev" 
             onClick={() => onProjectClick(prevProject.id)}
-            title={`Anterior: ${prevProject.title}`}
+            title={isEn ? `Previous: ${prevProject.title}` : `Anterior: ${prevProject.title}`}
           >
             <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
@@ -651,7 +656,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ id, onProjectClic
           <button 
             className="nav-arrow next" 
             onClick={() => onProjectClick(nextProject.id)}
-            title={`Siguiente: ${nextProject.title}`}
+            title={isEn ? `Next: ${nextProject.title}` : `Siguiente: ${nextProject.title}`}
           >
             <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>

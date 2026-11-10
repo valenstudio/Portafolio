@@ -121,6 +121,7 @@
   transition: transform 0.1s, box-shadow 0.1s;
 }
 
+
 .about-preview-whatsapp {
   display: inline-block;
   text-decoration: none;
@@ -133,10 +134,38 @@
   gap: 14px;
 }
 
-.about-preview-contact-btns .about-preview-btn {
+
+/* Language switch button styles */
+.lang-btn {
+  background-color: var(--color-primary);
+  color: #FFF;
+  border: 3px solid #000;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.9);
+  transition: transform 0.1s, box-shadow 0.1s;
   min-width: 150px;
   text-align: center;
 }
+
+/* Language switch button colors */
+
+
+/* Language switch container */
+.language-switch {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+  max-width: 1250px;
+  margin-bottom: 35px;
+  z-index: 10;
+}
+
 
 .about-preview-whatsapp:hover {
   transform: translate(-2px, -2px);
@@ -1214,7 +1243,8 @@
   .quote-text {
     font-size: 1.2rem;
   }
-  .services-cards-container {
+  .services-cards-container,
+  .language-switch {
     grid-template-columns: 1fr;
     max-width: 400px;
   }

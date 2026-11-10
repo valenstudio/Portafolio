@@ -8,6 +8,7 @@ import Preloader from './components/Preloader';
 import { projectsData, getCategorySectionId } from './data/projects';
 import { ShapeDecoration } from './components/Decorations';
 import { smoothScrollTo } from './utils/smoothScroll';
+import { useLanguage } from './context/LanguageContext';
 
 // Import images
 import profilePic from './assets/images/Fotovalen.png';
@@ -32,6 +33,8 @@ import lockBlue from './assets/images/Candadoazul.png';
 import lockPink from './assets/images/Candadorosa.png';
 
 function App() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [activePage, setActivePage] = useState<'HOME' | 'ABOUT' | 'PROJECTS' | 'CONTACT'>(() => {
     return (sessionStorage.getItem('activePage') as any) || 'HOME';
   });
@@ -253,10 +256,21 @@ function App() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                     >
-                      <span className="wrap-trigger">Soy <strong>Valentina Arbeláez</strong>, diseñadora gráfica en formación</span>
-                      con interés en las áreas de ilustración y de diseño editorial.<br />
-                      Me caracterizo por mi atención al detalle, adaptabilidad y enfoque estratégico al desarrollar ideas. Valoro el trabajo colaborativo,<br />
-                      la creatividad y la búsqueda constante de soluciones innovadoras.
+                      {isEn ? (
+                        <>
+                          <span className="wrap-trigger">I am <strong>Valentina Arbeláez</strong>, a graphic design student</span>
+                          with an interest in illustration and editorial design.<br />
+                          I am characterized by my attention to detail, adaptability, and strategic approach when developing ideas. I value collaborative work,<br />
+                          creativity, and the constant pursuit of innovative solutions.
+                        </>
+                      ) : (
+                        <>
+                          <span className="wrap-trigger">Soy <strong>Valentina Arbeláez</strong>, diseñadora gráfica en formación</span>
+                          con interés en las áreas de ilustración y de diseño editorial.<br />
+                          Me caracterizo por mi atención al detalle, adaptabilidad y enfoque estratégico al desarrollar ideas. Valoro el trabajo colaborativo,<br />
+                          la creatividad y la búsqueda constante de soluciones innovadoras.
+                        </>
+                      )}
                     </motion.p>
                   </div>
                 </div>
@@ -274,37 +288,54 @@ function App() {
                   transition={{ duration: 0.6 }}
                 >
                   <div className="education-section">
-                    <h2 className="section-title" style={{ whiteSpace: 'nowrap' }}>Formación académica</h2>
+                    <h2 className="section-title" style={{ whiteSpace: 'nowrap' }}>{isEn ? 'Academic Education' : 'Formación académica'}</h2>
                     <p className="edu-text">
-                      Pregrado Diseño Gráfico<br/>
-                      Universidad Pontificia<br/>
-                      Bolivariana | 2023 - Actual<br/>
-                      Medellín, Colombia
+                      {isEn ? (
+                        <>
+                          B.A. in Graphic Design<br/>
+                          Universidad Pontificia<br/>
+                          Bolivariana | 2023 - Present<br/>
+                          Medellín, Colombia
+                        </>
+                      ) : (
+                        <>
+                          Pregrado Diseño Gráfico<br/>
+                          Universidad Pontificia<br/>
+                          Bolivariana | 2023 - Actual<br/>
+                          Medellín, Colombia
+                        </>
+                      )}
                     </p>
                     <div className="honor-badge">
                       <span className="asterisk">*</span>
-                      <p>Distinción académica<br/>Núcleo Profesional I<br/>| 2025 -01<br/>Ecos Latinos</p>
+                      <p>
+                        {isEn ? (
+                          <>Academic Distinction<br/>Professional Core I<br/>| 2025 -01<br/>Ecos Latinos</>
+                        ) : (
+                          <>Distinción académica<br/>Núcleo Profesional I<br/>| 2025 -01<br/>Ecos Latinos</>
+                        )}
+                      </p>
                     </div>
                     </div>
                   
                   <div className="emphasis-area" style={{ marginTop: '0.5rem' }}>
-                    <h3 className="section-title">Énfasis</h3>
+                    <h3 className="section-title">{isEn ? 'Focus Areas' : 'Énfasis'}</h3>
                     <div className="stamps-container">
                       <div className="stamp-item" onClick={() => handleNavClick('PROJECTS', 'EDITORIAL')}>
                         <div className="stamp-box">
-                          <img src={keyPink} alt="Llave rosa" className="stamp-icon" />
+                          <img src={keyPink} alt={isEn ? "Pink key" : "Llave rosa"} className="stamp-icon" />
                         </div>
                         <span className="stamp-label"><span className="mv-asterisk">*</span>Editorial</span>
                       </div>
                       <div className="stamp-item" onClick={() => handleNavClick('PROJECTS', 'ILUSTRACIÓN')}>
                         <div className="stamp-box">
-                          <img src={keyRed} alt="Llave roja" className="stamp-icon" />
+                          <img src={keyRed} alt={isEn ? "Red key" : "Llave roja"} className="stamp-icon" />
                         </div>
-                        <span className="stamp-label"><span className="mv-asterisk">*</span>Ilustración</span>
+                        <span className="stamp-label"><span className="mv-asterisk">*</span>{isEn ? 'Illustration' : 'Ilustración'}</span>
                       </div>
                       <div className="stamp-item" onClick={() => handleNavClick('PROJECTS', 'BRANDING')}>
                         <div className="stamp-box y-bg">
-                          <img src={keyGreen} alt="Llave verde" className="stamp-icon" />
+                          <img src={keyGreen} alt={isEn ? "Green key" : "Llave verde"} className="stamp-icon" />
                         </div>
                         <span className="stamp-label"><span className="mv-asterisk">*</span>Branding</span>
                       </div>
@@ -321,7 +352,7 @@ function App() {
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: 0.1 }}
                 >
-                  <h2 className="section-title">Herramientas</h2>
+                  <h2 className="section-title">{isEn ? 'Tools' : 'Herramientas'}</h2>
                   <ul className="tools-list">
                     <li><span className="tool-name">Ai</span> <div className="tool-line"><span className="tool-asterisk" style={{left: '80%'}}>*</span></div></li>
                     <li><span className="tool-name">Ps</span> <div className="tool-line"><span className="tool-asterisk" style={{left: '85%'}}>*</span></div></li>
@@ -340,31 +371,31 @@ function App() {
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                  <h2 className="section-title">Intereses</h2>
+                  <h2 className="section-title">{isEn ? 'Interests' : 'Intereses'}</h2>
                   <div className="interests-grid">
                     <div className="interest-item">
                       <div className="stamp-box-interest">
-                        <img src={stampDog} alt="Animales" />
+                        <img src={stampDog} alt={isEn ? "Animals" : "Animales"} />
                       </div>
-                      <span>Animales</span>
+                      <span>{isEn ? 'Animals' : 'Animales'}</span>
                     </div>
                     <div className="interest-item">
                       <div className="stamp-box-interest">
-                        <img src={stampMug} alt="Cerámica" />
+                        <img src={stampMug} alt={isEn ? "Ceramics" : "Cerámica"} />
                       </div>
-                      <span>Cerámica</span>
+                      <span>{isEn ? 'Ceramics' : 'Cerámica'}</span>
                     </div>
                     <div className="interest-item">
                       <div className="stamp-box-interest star-bg">
-                        <img src={stampStar} alt="La astrología" className="star-interest" />
+                        <img src={stampStar} alt={isEn ? "Astrology" : "La astrología"} className="star-interest" />
                       </div>
-                      <span>La astrología</span>
+                      <span>{isEn ? 'Astrology' : 'La astrología'}</span>
                     </div>
                     <div className="interest-item">
                       <div className="stamp-box-interest apple-bg">
-                        <img src={stampApple} alt="La cocina" />
+                        <img src={stampApple} alt={isEn ? "Cooking" : "La cocina"} />
                       </div>
-                      <span>La cocina</span>
+                      <span>{isEn ? 'Cooking' : 'La cocina'}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -376,19 +407,19 @@ function App() {
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.6, delay: 0.3 }}
                 >
-                  <h2 className="section-title">Idiomas</h2>
+                  <h2 className="section-title">{isEn ? 'Languages' : 'Idiomas'}</h2>
                   <div className="language-item">
-                    <img src={lockBlue} alt="Candado azul" />
+                    <img src={lockBlue} alt={isEn ? "Blue lock" : "Candado azul"} />
                     <div className="lang-text">
-                      <strong>Español</strong>
-                      <span>C2 — Nativo</span>
+                      <strong>{isEn ? 'Spanish' : 'Español'}</strong>
+                      <span>{isEn ? 'C2 — Native' : 'C2 — Nativo'}</span>
                     </div>
                   </div>
                   <div className="language-item">
-                    <img src={lockPink} alt="Candado rosa" />
+                    <img src={lockPink} alt={isEn ? "Pink lock" : "Candado rosa"} />
                     <div className="lang-text">
-                      <strong>Inglés</strong>
-                      <span>B2 — Avanzado</span>
+                      <strong>{isEn ? 'English' : 'Inglés'}</strong>
+                      <span>{isEn ? 'B2 — Advanced' : 'B2 — Avanzado'}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -489,8 +520,8 @@ function App() {
             </button>
 
             <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('HOME'); }} className={activePage === 'HOME' ? 'active' : ''}>INICIO</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('ABOUT'); }} className={activePage === 'ABOUT' ? 'active' : ''}>SOBRE MÍ</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('HOME'); }} className={activePage === 'HOME' ? 'active' : ''}>{isEn ? 'HOME' : 'INICIO'}</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('ABOUT'); }} className={activePage === 'ABOUT' ? 'active' : ''}>{isEn ? 'ABOUT ME' : 'SOBRE MÍ'}</a></li>
               <li className="dropdown">
                 <a href="#" 
                    className={activePage === 'PROJECTS' ? 'active' : ''}
@@ -498,16 +529,16 @@ function App() {
                      e.preventDefault();
                      handleNavClick('PROJECTS');
                    }}
-                >PROYECTOS</a>
+                >{isEn ? 'PROJECTS' : 'PROYECTOS'}</a>
                 <div className="dropdown-content">
                   <div className="dropdown-inner">
-                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('PROJECTS', 'ILUSTRACIÓN'); }}>ILUSTRACIÓN</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('PROJECTS', 'ILUSTRACIÓN'); }}>{isEn ? 'ILLUSTRATION' : 'ILUSTRACIÓN'}</a>
                     <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('PROJECTS', 'BRANDING'); }}>BRANDING</a>
                     <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('PROJECTS', 'EDITORIAL'); }}>EDITORIAL</a>
                   </div>
                 </div>
               </li>
-              <li><a href="./PortafolioValentinaArbelaez2026.pdf" target="_blank" rel="noopener noreferrer">PORTAFOLIO PDF</a></li>
+              <li><a href="./PortafolioValentinaArbelaez2026.pdf" target="_blank" rel="noopener noreferrer">{isEn ? 'PDF PORTFOLIO' : 'PORTAFOLIO PDF'}</a></li>
             </ul>
           </motion.nav>
 
@@ -521,40 +552,40 @@ function App() {
             <footer className="footer-section">
             <div className="footer-marquee">
               <div className="footer-marquee-content">
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
               </div>
               <div className="footer-marquee-content" aria-hidden="true">
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
-                <span>+57 311 360 6718</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
+                <span>+57 3002248086</span><span className="footer-star">*</span>
                 <span>valearbelaez.06@gmail.com</span><span className="footer-star">*</span>
                 <span>Medellín, Colombia <strong>2026</strong></span><span className="footer-star">*</span>
-                <span>Derechos Reservados</span><span className="footer-star">*</span>
+                <span>{isEn ? 'All Rights Reserved' : 'Derechos Reservados'}</span><span className="footer-star">*</span>
               </div>
             </div>
           </footer>

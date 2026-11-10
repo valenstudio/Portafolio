@@ -1090,3 +1090,21 @@
     max-height: none;
   }
 }
+
+/* Medium portrait pair: same as large portrait but a bit smaller (Carrito / Pesa) */
+.image-spread.large-portrait.medium-portrait img {
+  height: 520px;
+}
+
+@media (max-width: 1024px) {
+  .image-spread.large-portrait.medium-portrait img {
+    height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .image-spread.large-portrait.medium-portrait img {
+    height: auto;
+    max-height: 60vh;
+  }
+}

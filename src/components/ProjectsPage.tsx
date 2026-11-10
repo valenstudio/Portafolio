@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import './ProjectsPage.css';
 import { projectsData, projectCategories } from '../data/projects';
 import { ShapeDecoration, type ShapeType } from './Decorations';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProjectsPageProps {
   onProjectClick: (id: number) => void;
@@ -17,11 +18,15 @@ const categoryStyles: Record<string, { bg: string; color: string; thumbBg: strin
 };
 
 const ProjectsPage: React.FC<ProjectsPageProps> = ({ onProjectClick }) => {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
+
   return (
     <div className="home-page projects-overview">
       {projectCategories.map((category, catIndex) => {
         const style = categoryStyles[category.key];
         const projects = projectsData.filter(p => p.category === category.key);
+        const catLabel = isEn ? category.labelEn : category.label;
 
         return (
           <section
@@ -40,38 +45,42 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ onProjectClick }) => {
               />
 
               <h2 className="projects-category-title" style={{ color: style.color }}>
-                {category.label}
+                {catLabel}
                 <span className="projects-category-asterisk">*</span>
               </h2>
 
               <div className="projects-tiles-grid">
-                {projects.map((project, index) => (
-                  <motion.button
-                    key={project.id}
-                    type="button"
-                    className="project-tile"
-                    style={{ '--tile-bg': style.bg, '--tile-color': style.color, '--tile-thumb-bg': style.thumbBg } as React.CSSProperties}
-                    onClick={() => onProjectClick(project.id)}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-60px' }}
-                    transition={{ duration: 0.5, delay: index * 0.08 }}
-                    aria-label={`Ver proyecto ${project.title}`}
-                  >
-                    <div className="project-tile-inner">
-                      <div className={`project-tile-thumb ${project.thumbnailFit === 'cover' ? 'fit-cover' : 'fit-contain'}`}>
-                        {project.thumbnail && (
-                          <img src={project.thumbnail} alt="" loading="lazy" />
-                        )}
+                {projects.map((project, index) => {
+                  const projTitle = project.title;
+                  const projSubtitle = isEn ? (project.subtitleEn ?? project.subtitle) : project.subtitle;
+                  return (
+                    <motion.button
+                      key={project.id}
+                      type="button"
+                      className="project-tile"
+                      style={{ '--tile-bg': style.bg, '--tile-color': style.color, '--tile-thumb-bg': style.thumbBg } as React.CSSProperties}
+                      onClick={() => onProjectClick(project.id)}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: '-60px' }}
+                      transition={{ duration: 0.5, delay: index * 0.08 }}
+                      aria-label={isEn ? `View project ${projTitle}` : `Ver proyecto ${projTitle}`}
+                    >
+                      <div className="project-tile-inner">
+                        <div className={`project-tile-thumb ${project.thumbnailFit === 'cover' ? 'fit-cover' : 'fit-contain'}`}>
+                          {project.thumbnail && (
+                            <img src={project.thumbnail} alt="" loading="lazy" />
+                          )}
+                        </div>
+                        <div className="project-tile-info">
+                          <span className="project-tile-title">{projTitle}</span>
+                          <span className="project-tile-number">({index < 9 ? '0' : ''}{index + 1})</span>
+                        </div>
+                        <span className="project-tile-subtitle">{projSubtitle.replace('\n', ' ')}</span>
                       </div>
-                      <div className="project-tile-info">
-                        <span className="project-tile-title">{project.title}</span>
-                        <span className="project-tile-number">({index < 9 ? '0' : ''}{index + 1})</span>
-                      </div>
-                      <span className="project-tile-subtitle">{project.subtitle.replace('\n', ' ')}</span>
-                    </div>
-                  </motion.button>
-                ))}
+                    </motion.button>
+                  );
+                })}
               </div>
             </div>
           </section>
